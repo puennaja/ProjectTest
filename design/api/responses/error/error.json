@@ -1,0 +1,10 @@
+{
+  "description": "Error Response",
+  "content": {
+    "application/json": {
+      "schema": {
+        "$ref": "../../schemas/error/error.json"
+      }
+    }
+  }
+}

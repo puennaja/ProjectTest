@@ -1,0 +1,8 @@
+{
+  "name": "search",
+  "in": "query",
+  "description": "serch data query",
+  "schema": {
+    "type": "string"
+  }
+}

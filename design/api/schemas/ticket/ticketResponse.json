@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "required": ["name", "detail", "status", "user", "created_at", "updated_at"],
+  "description": "ticket request body",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["to_do", "in_progress", "done"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "user": {
+      "$ref": "./ticketuser.json"
+    }
+  },
+  "example": {
+    "name": "Ticket Name",
+    "detail": "ticket detail",
+    "status": "to_do",
+    "created_at": "2022-05-06T09:52:47.032+00:00",
+    "updated_at": "2022-05-06T09:52:47.032+00:00",
+    "user": {
+      "id": "542c2b97bac0595474108b48",
+      "name": "User Name",
+      "email": "user@example.com",
+      "image_url": "http://localhost/path/to/image.png"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required": ["message"],
+  "description": "response data from the server",
+  "properties": {
+    "message": {
+      "type": "string",
+      "description": "response message"
+    }
+  },
+  "example": {
+    "message": "success"
+  }
+}

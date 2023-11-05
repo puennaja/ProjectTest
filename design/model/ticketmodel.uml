@@ -1,0 +1,74 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table users {
+    _id objectId
+    name string
+    pwd string
+    email string
+    image_url string
+    create_at date_time
+    update_at date_time
+    role string
+
+    indexes {
+        _id [type: hash, unique]
+        email [type: hash, unique]
+    }
+}
+
+enum ticket_status {
+    to_do
+    in_progress
+    done
+}
+
+Table ticket {
+    _id objectId
+    user_id objectId
+    name string
+    detail string
+    status ticket_status
+    create_at date_time
+    update_at date_time
+    archive boolean
+
+    indexes {
+        _id [type: hash, unique]
+        user_id [type: hash]
+    }
+}
+
+Table ticket_history {
+    _id objectId
+    user_id objectId
+    ticket_id objectId
+    create_at date_time
+    from ticketObject
+    to ticketObject
+
+    indexes {
+        _id [type: hash, unique]
+        ticket_id [type: hash]
+    }
+}
+
+Table ticket_comment {
+    _id objectId
+    user_id objectId
+    ticket_id objectId
+    create_at date_time
+    update_at date_time
+    comment string
+
+    indexes {
+        _id [type: hash, unique]
+        ticket_id [type: hash]
+    }
+}
+
+Ref: ticket.user_id > users._id
+Ref: ticket_history.user_id > users._id
+Ref: ticket_comment.user_id > users._id
+Ref: ticket_history.ticket_id > ticket._id
+Ref: ticket_comment.ticket_id > ticket._id

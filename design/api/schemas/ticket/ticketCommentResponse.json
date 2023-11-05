@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "required": ["ticket_id", "user", "comment", "created_at", "updated_at"],
+  "description": "ticket request body",
+  "properties": {
+    "ticket_id": {
+      "type": "string"
+    },
+    "comment": {
+      "type": "string"
+    },
+    "user": {
+      "$ref": "./ticketuser.json"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "example": {
+    "ticket_id": "542c2b97bac0595474108b48",
+    "comment": "this is comment",
+    "user": {
+      "id": "542c2b97bac0595474108b48",
+      "name": "User Name",
+      "email": "user@example.com",
+      "image_url": "http://example/path/to/image.png"
+    },
+    "created_at": "2022-05-06T09:52:47.032+00:00",
+    "updated_at": "2022-05-06T09:52:47.032+00:00"
+  }
+}

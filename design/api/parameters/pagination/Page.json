@@ -1,0 +1,11 @@
+{
+  "name": "page",
+  "in": "query",
+  "description": "page",
+  "required": true,
+  "schema": {
+    "type": "integer",
+    "format": "int64",
+    "default": 1
+  }
+}

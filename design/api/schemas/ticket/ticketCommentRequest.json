@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "required": ["comment"],
+  "description": "ticket comment request body",
+  "properties": {
+    "comment": {
+      "type": "string"
+    }
+  },
+  "example": {
+    "comment": "this is comment"
+  }
+}

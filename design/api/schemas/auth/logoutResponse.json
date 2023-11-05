@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "required": ["message"],
+  "description": "request logout object to the server",
+  "properties": {
+    "message": {
+      "type": "string"
+    }
+  },
+  "example": {
+    "message": "success"
+  }
+}

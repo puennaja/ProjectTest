@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "required": [],
+  "description": "ticket update request body",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "archive": {
+      "type": "boolean"
+    }
+  },
+  "example": {
+    "name": "Ticket New Name",
+    "detail": "detail of the ticket",
+    "archive": true
+  }
+}

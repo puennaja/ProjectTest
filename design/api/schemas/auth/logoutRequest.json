@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "required": ["access_token", "refresh_token"],
+  "description": "request logout object to the server",
+  "properties": {
+    "access_token": {
+      "type": "string",
+      "description": "access token"
+    },
+    "refresh_token": {
+      "type": "string",
+      "description": "refresh token"
+    }
+  }
+}

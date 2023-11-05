@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": ["name", "detail", "status"],
+  "description": "ticket object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["to_do", "in_progress", "done"]
+    }
+  },
+  "example": {
+    "name": "Ticket Name",
+    "detail": "ticket detail",
+    "status": "to_do"
+  }
+}

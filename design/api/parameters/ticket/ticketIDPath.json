@@ -1,0 +1,9 @@
+{
+  "name": "id",
+  "in": "path",
+  "description": "ticket id",
+  "required": true,
+  "schema": {
+    "type": "string"
+  }
+}

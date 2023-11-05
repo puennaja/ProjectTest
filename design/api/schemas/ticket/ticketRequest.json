@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "required": ["name", "detail"],
+  "description": "ticket update request body",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    }
+  },
+  "example": {
+    "name": "Ticket Name",
+    "detail": "detail of the ticket"
+  }
+}

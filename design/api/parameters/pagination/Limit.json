@@ -1,0 +1,11 @@
+{
+  "name": "limit",
+  "in": "query",
+  "description": "limit",
+  "required": true,
+  "schema": {
+    "type": "integer",
+    "format": "int64",
+    "default": 10
+  }
+}

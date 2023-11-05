@@ -1,0 +1,512 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Ticket API",
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Healthcheck"
+    },
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "User"
+    },
+    {
+      "name": "Ticket"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/healthcheck": {
+      "get": {
+        "tags": ["Healthcheck"],
+        "summary": "/healthcheck",
+        "description": "check the health of the server",
+        "security": [],
+        "responses": {
+          "200": {
+            "$ref": "./responses/healthcheck/200.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "/v1/auth/login",
+        "description": "login to the application",
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/auth/loginRequest.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "./responses/auth/200login.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh-token": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "/v1/auth/refresh-token",
+        "description": "refresh token",
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/auth/refreshTokenRequest.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "./responses/auth/200refresh.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "/v1/auth/logout",
+        "description": "refresh token",
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/auth/logoutRequest.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "./responses/auth/200logout.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      }
+    },
+    "/api/v1/user/me": {
+      "get": {
+        "tags": ["User"],
+        "summary": "/v1/user/me",
+        "description": "get user profile data",
+        "responses": {
+          "200": {
+            "$ref": "./responses/user/200user.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      }
+    },
+    "/api/v1/ticket": {
+      "get": {
+        "tags": ["Ticket"],
+        "summary": "/v1/ticket",
+        "description": "get ticket data list",
+        "parameters": [
+          {
+            "$ref": "./parameters/pagination/Limit.json"
+          },
+          {
+            "$ref": "./parameters/pagination/Page.json"
+          },
+          {
+            "$ref": "./parameters/pagination/Search.json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "./responses/ticket/200ticketList.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Ticket"],
+        "summary": "/v1/ticket",
+        "description": "new ticket",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/ticket/ticketRequest.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "./responses/ticket/200ticket.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      }
+    },
+    "/api/v1/ticket/{id}": {
+      "get": {
+        "tags": ["Ticket"],
+        "summary": "/v1/ticket/{id}",
+        "description": "get ticket data",
+        "parameters": [
+          {
+            "$ref": "./parameters/ticket/ticketIDPath.json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "./responses/ticket/200ticket.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Ticket"],
+        "summary": "/v1/ticket/{id}",
+        "description": "upadte ticket",
+        "parameters": [
+          {
+            "$ref": "./parameters/ticket/ticketIDPath.json"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/ticket/ticketUpdateRequest.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "./responses/ticket/200ticket.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Ticket"],
+        "summary": "/v1/ticket/{id}",
+        "description": "delete ticket",
+        "parameters": [
+          {
+            "$ref": "./parameters/ticket/ticketIDPath.json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "./responses/ticket/200ticket.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      }
+    },
+    "/api/v1/ticket/{id}/history": {
+      "get": {
+        "tags": ["Ticket"],
+        "summary": "/v1/ticket/{id}/history",
+        "description": "get ticket history data list",
+        "parameters": [
+          {
+            "$ref": "./parameters/ticket/ticketIDPath.json"
+          },
+          {
+            "$ref": "./parameters/pagination/Limit.json"
+          },
+          {
+            "$ref": "./parameters/pagination/Page.json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "./responses/ticket/200ticketHistoryList.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      }
+    },
+    "/api/v1/ticket/{id}/comment": {
+      "get": {
+        "tags": ["Ticket"],
+        "summary": "/v1/ticket/{id}/comment",
+        "description": "get ticket comment data list",
+        "parameters": [
+          {
+            "$ref": "./parameters/ticket/ticketIDPath.json"
+          },
+          {
+            "$ref": "./parameters/pagination/Limit.json"
+          },
+          {
+            "$ref": "./parameters/pagination/Page.json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "./responses/ticket/200ticketCommentList.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Ticket"],
+        "summary": "/v1/ticket/{id}/comment",
+        "description": "creat ticket comment data",
+        "parameters": [
+          {
+            "$ref": "./parameters/ticket/ticketIDPath.json"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/ticket/ticketCommentRequest.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "./responses/ticket/200ticketCommentList.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      }
+    },
+    "/api/v1/ticket/{id}/comment/{comment_id}": {
+      "patch": {
+        "tags": ["Ticket"],
+        "summary": "/v1/ticket/{id}/comment/{comment_id}",
+        "description": "update ticket comment data",
+        "parameters": [
+          {
+            "$ref": "./parameters/ticket/ticketIDPath.json"
+          },
+          {
+            "$ref": "./parameters/ticket/ticketCommentIDPath.json"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/ticket/ticketCommentUpdateRequest.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "./responses/ticket/200ticketComment.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Ticket"],
+        "summary": "/v1/ticket/{id}/comment/{comment_id}",
+        "description": "delete comment data",
+        "parameters": [
+          {
+            "$ref": "./parameters/ticket/ticketIDPath.json"
+          },
+          {
+            "$ref": "./parameters/ticket/ticketCommentIDPath.json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "./responses/ticket/200ticketComment.json"
+          },
+          "400": {
+            "$ref": "./responses/error/error.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
+          },
+          "403": {
+            "$ref": "./responses/error/error.json"
+          },
+          "500": {
+            "$ref": "./responses/error/error.json"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "description": "Autorization for used the private routes",
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

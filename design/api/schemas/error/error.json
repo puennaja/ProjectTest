@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": ["code", "message"],
+  "properties": {
+    "code": {
+      "type": "integer",
+      "format": "int64",
+      "description": "error code"
+    },
+    "message": {
+      "type": "string",
+      "description": "error message"
+    }
+  },
+  "example": {
+    "code": 1001,
+    "message": "this is error"
+  }
+}
