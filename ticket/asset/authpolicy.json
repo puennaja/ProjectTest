@@ -1,0 +1,5 @@
+[
+  { "ptype": "p", "v0": "user", "v1": "/user/me", "v2": "GET" },
+  { "ptype": "g", "v0": "dev", "v1": "user" },
+  { "ptype": "g", "v0": "qa", "v1": "user" }
+]

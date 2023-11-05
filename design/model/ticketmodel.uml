@@ -2,7 +2,7 @@
 // Docs: https://dbml.dbdiagram.io/docs
 
 Table users {
-    _id objectId
+    _id objectID
     name string
     pwd string
     email string
@@ -24,8 +24,8 @@ enum ticket_status {
 }
 
 Table ticket {
-    _id objectId
-    user_id objectId
+    _id objectID
+    user_id objectID
     name string
     detail string
     status ticket_status
@@ -40,9 +40,9 @@ Table ticket {
 }
 
 Table ticket_history {
-    _id objectId
-    user_id objectId
-    ticket_id objectId
+    _id objectID
+    user_id objectID
+    ticket_id objectID
     create_at date_time
     from ticketObject
     to ticketObject
@@ -54,9 +54,9 @@ Table ticket_history {
 }
 
 Table ticket_comment {
-    _id objectId
-    user_id objectId
-    ticket_id objectId
+    _id objectID
+    user_id objectID
+    ticket_id objectID
     create_at date_time
     update_at date_time
     comment string
