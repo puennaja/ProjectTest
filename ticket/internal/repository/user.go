@@ -5,62 +5,12 @@ import (
 	"ticket/internal/core/domain"
 	"ticket/internal/core/port"
 	"ticket/pkg/errors"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 )
-
-type userRepository struct {
-	repository[user]
-}
-
-type user struct {
-	baseUser
-	password string    `bson:"pwd"`
-	role     string    `bson:"role"`
-	createAt time.Time `bson:"create_at"`
-	updateAt time.Time `bson:"update_at"`
-}
-type baseUser struct {
-	id       primitive.ObjectID `bson:"_id"`
-	name     string             `bson:"name"`
-	email    string             `bson:"email"`
-	imageUrl string             `bson:"image_url"`
-}
-
-func (b baseUser) fromDomain(d domain.BaseUser) baseUser {
-	return baseUser{
-		name:     d.Name,
-		email:    d.Email,
-		imageUrl: d.ImageUrl,
-	}
-}
-
-func (b baseUser) toDomain() domain.BaseUser {
-	return domain.BaseUser{
-		ID:       b.id.Hex(),
-		Name:     b.name,
-		Email:    b.email,
-		ImageUrl: b.imageUrl,
-	}
-}
-
-func (u *user) toDomain() *domain.User {
-	if u == nil {
-		return nil
-	}
-	return &domain.User{
-		BaseUser: u.baseUser.toDomain(),
-		Password: u.password,
-		Role:     u.role,
-		CreateAt: u.createAt,
-		UpdateAt: u.updateAt,
-	}
-}
 
 func NewUserRepository(logger *zap.SugaredLogger, mc *mongo.Client, db string) port.UserRepository {
 	var repo = &userRepository{repository[user]{

@@ -1,5 +1,5 @@
 {
-  "name": "comment_id",
+  "name": "id",
   "in": "path",
   "description": "ticket comment id",
   "required": true,

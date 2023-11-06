@@ -16,7 +16,7 @@ const (
 
 	TicketNotFoundCode        int = 1020
 	TicketHistoryNotFoundCode int = 1021
-	TicketCommentNotFoundCode int = 1022
+	TicketCommentNotFoundCode int = 1023
 )
 
 var (

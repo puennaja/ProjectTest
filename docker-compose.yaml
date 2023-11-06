@@ -1,11 +1,16 @@
 version: "3.7"
 services:
   server:
+    build:
+      context: ./ticket
+      dockerfile: Dockerfile
+      tags:
+        - "ticket-project:1.0.0"
     container_name: service-ticket-project
     image: ticket-project:1.0.0
     environment:
       SERVER_HOST: "0.0.0.0"
-      SERVER_PORT: "8080"
+      SERVER_PORT: "8001"
       SERVICE: "ticket-api"
       APP_VERSION: "1.0.0"
       MONGODB_URI: "mongodb://test:test@mongo-ticket-project:27017"
@@ -17,13 +22,18 @@ services:
       AUTH_MODEL_PATH: "/app/asset/authmodel.conf"
       AUTH_POLICY_PATH: "/app/asset/authpolicy.json"
     ports:
-      - 8080:8080
+      - 8001:8001
     networks:
       - project-network
 
   mongo:
+    build:
+      context: ./ticketdatabase
+      dockerfile: Dockerfile
+      tags:
+        - "mongo-ticket-project:1.0.0"
     container_name: mongo-ticket-project
-    image: mongo:4.4.19
+    image: mongo-ticket-project:1.0.0
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: test
@@ -35,11 +45,25 @@ services:
     networks:
       - project-network
 
+  mongo-seed:
+    build:
+      context: ./ticketdatabase/seed
+      dockerfile: Dockerfile
+      args:
+        - DATABASE_URI=mongodb://test:test@mongo-ticket-project:27017/ticket
+        - USERNAME=test
+        - PASSWORD=test
+    container_name: mongo-seed
+    depends_on:
+      - mongo
+    networks:
+      - project-network
+
 volumes:
   mongo_data:
     name: ticket-project-mongo_data
 
 networks:
   project-network:
-    external: true
+    external: false
     name: project-network

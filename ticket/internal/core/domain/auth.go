@@ -23,17 +23,15 @@ type AuthConfig struct {
 
 type LoginRequest struct {
 	Email string `json:"email" validate:"required,email"`
-	Pwd   string `json:"p[assword]" validate:"required"`
+	Pwd   string `json:"password" validate:"required"`
 }
 
 type RefreshTokenRequest struct {
-	AccessToken  string `json:"-" validate:"required,jwt"`
 	RefreshToken string `json:"refresh_token" validate:"required"`
 }
 
 type LogoutRequest struct {
-	AccessToken  string `json:"access_token" validate:"required,jwt"`
-	RefreshToken string `json:"refresh_token" validate:"required"`
+	AccessToken string `json:"-" validate:"required,jwt"`
 }
 
 type TokenResponse struct {
@@ -46,7 +44,7 @@ type SuccessResponse struct {
 }
 
 type AuthenticationResponse struct {
-	User *User
+	User User
 }
 
 type AuthorizationResponse struct {
@@ -54,7 +52,7 @@ type AuthorizationResponse struct {
 }
 
 type UserClaims struct {
-	ID   string `json:"id"`
-	Role string `json:"role"`
+	UserID string `json:"user_id,omitempty"`
+	Role   string `json:"role,omitempty"`
 	jwt.StandardClaims
 }

@@ -20,7 +20,10 @@ func ServeREST() error {
 	e.HTTPErrorHandler = middleware.ErrorHandler
 
 	httpHdl := httphdl.NewHTTP(httphdl.Config{
-		Validator: app.pkg.validator,
+		Validator:     app.pkg.validator,
+		AuthService:   app.svc.authSvc,
+		UserService:   app.svc.userSvc,
+		TicketService: app.svc.ticketSvc,
 	})
 	e.GET("/healthcheck", httpHdl.HealthCheck)
 	apiGroup := e.Group("/api/v1")
@@ -30,18 +33,18 @@ func ServeREST() error {
 			middleware.Logger(app.logger),
 		)
 
-		// authGroup := apiGroup.Group("/auth")
-		// {
-		// 	// Public Route
-		// 	authGroup.GET("/login", httpHdl)
-		// 	authGroup.POST("/refresh-token", httpHdl.RefreshAccessToken)
+		authGroup := apiGroup.Group("/auth")
+		{
+			// Public Route
+			authGroup.POST("/login", httpHdl.Login)
+			authGroup.POST("/refresh-token", httpHdl.RefreshAccessToken)
 
-		// 	// Private Route
-		// 	authGroup.Use(
-		// 		middleware.Auth(app.svc.authSvc),
-		// 	)
-		// 	authGroup.POST("/logout", httpHdl.Logout)
-		// }
+			//Private Route
+			authGroup.Use(
+				middleware.Auth(app.svc.authSvc),
+			)
+			authGroup.POST("/logout", httpHdl.Logout)
+		}
 
 		userGroup := apiGroup.Group("/user")
 		{
@@ -50,6 +53,24 @@ func ServeREST() error {
 				middleware.Auth(app.svc.authSvc),
 			)
 			userGroup.GET("/me", httpHdl.UserMe)
+		}
+
+		ticketGroup := apiGroup.Group("/ticket")
+		{
+			// Private Route
+			ticketGroup.Use(
+				middleware.Auth(app.svc.authSvc),
+			)
+			ticketGroup.POST("", httpHdl.CreateTicket)
+			ticketGroup.GET("", httpHdl.GetTicketList)
+			ticketGroup.PATCH("/comment/:id", httpHdl.UpdateTicketComment)
+			ticketGroup.DELETE("/comment/:id", httpHdl.DeleteTicketComment)
+			ticketGroup.POST("/:id/comment", httpHdl.CreateTicketComment)
+			ticketGroup.GET("/:id/comment", httpHdl.GetTicketCommentList)
+			ticketGroup.GET("/:id/history", httpHdl.GetTicketHistoryList)
+			ticketGroup.GET("/:id", httpHdl.GetTicket)
+			ticketGroup.PATCH("/:id", httpHdl.UpdateTicket)
+			ticketGroup.DELETE("/:id", httpHdl.DeleteTicket)
 		}
 	}
 

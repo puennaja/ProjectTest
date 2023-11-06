@@ -9,6 +9,9 @@
   },
   "servers": [
     {
+      "url": "http://localhost:8001"
+    },
+    {
       "url": "http://localhost:8080"
     }
   ],
@@ -111,20 +114,13 @@
       "post": {
         "tags": ["Auth"],
         "summary": "/v1/auth/logout",
-        "description": "refresh token",
-        "security": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "./schemas/auth/logoutRequest.json"
-              }
-            }
-          }
-        },
+        "description": "logout",
         "responses": {
           "200": {
             "$ref": "./responses/auth/200logout.json"
+          },
+          "401": {
+            "$ref": "./responses/error/error.json"
           },
           "400": {
             "$ref": "./responses/error/error.json"
@@ -426,15 +422,12 @@
         }
       }
     },
-    "/api/v1/ticket/{id}/comment/{comment_id}": {
+    "/api/v1/ticket/comment/{id}": {
       "patch": {
         "tags": ["Ticket"],
-        "summary": "/v1/ticket/{id}/comment/{comment_id}",
+        "summary": "/v1/ticket/comment/{comment_id}",
         "description": "update ticket comment data",
         "parameters": [
-          {
-            "$ref": "./parameters/ticket/ticketIDPath.json"
-          },
           {
             "$ref": "./parameters/ticket/ticketCommentIDPath.json"
           }
@@ -469,12 +462,9 @@
       },
       "delete": {
         "tags": ["Ticket"],
-        "summary": "/v1/ticket/{id}/comment/{comment_id}",
+        "summary": "/v1/ticket/comment/{comment_id}",
         "description": "delete comment data",
         "parameters": [
-          {
-            "$ref": "./parameters/ticket/ticketIDPath.json"
-          },
           {
             "$ref": "./parameters/ticket/ticketCommentIDPath.json"
           }

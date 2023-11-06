@@ -1,8 +1,8 @@
 package domain
 
 const (
-	QueryCreatedAt    = "created_at"
-	QueryUpdatedAt    = "updated_at"
+	QueryCreateAt     = "create_at"
+	QueryUpdateAt     = "update_at"
 	SortDirectionDesc = "desc"
 	SortDirectionAsc  = "asc"
 )

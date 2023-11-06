@@ -1,7 +1,7 @@
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
 
-Table users {
+Table user {
     _id objectID
     name string
     pwd string
@@ -23,29 +23,42 @@ enum ticket_status {
     done
 }
 
+Table ticketUser {
+    id objectID
+    name string
+    email string
+    image_url string
+}
+
+Table baseTicket {
+    name string
+    detail string
+    status ticket_status
+    archive boolean
+}
+
 Table ticket {
     _id objectID
-    user_id objectID
     name string
     detail string
     status ticket_status
     create_at date_time
     update_at date_time
     archive boolean
+    user ticketUser
 
     indexes {
         _id [type: hash, unique]
-        user_id [type: hash]
     }
 }
 
 Table ticket_history {
     _id objectID
-    user_id objectID
     ticket_id objectID
+    user ticketUser
     create_at date_time
-    from ticketObject
-    to ticketObject
+    from baseTicket
+    to baseTicket
 
     indexes {
         _id [type: hash, unique]
@@ -55,8 +68,8 @@ Table ticket_history {
 
 Table ticket_comment {
     _id objectID
-    user_id objectID
     ticket_id objectID
+    user ticketUser
     create_at date_time
     update_at date_time
     comment string
@@ -67,8 +80,6 @@ Table ticket_comment {
     }
 }
 
-Ref: ticket.user_id > users._id
-Ref: ticket_history.user_id > users._id
-Ref: ticket_comment.user_id > users._id
-Ref: ticket_history.ticket_id > ticket._id
-Ref: ticket_comment.ticket_id > ticket._id
+Ref: user._id < ticketUser.id
+Ref: ticket._id < ticket_history.ticket_id
+Ref: ticket._id < ticket_comment.ticket_id

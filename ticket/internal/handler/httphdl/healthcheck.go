@@ -1,6 +1,8 @@
 package httphdl
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -11,5 +13,5 @@ import (
 // @Router /healthcheck [GET]
 func (hdl *HTTPHandler) HealthCheck(ctx echo.Context) error {
 	resp := map[string]string{"message": "success"}
-	return ctx.JSON(200, resp)
+	return ctx.JSON(http.StatusOK, resp)
 }

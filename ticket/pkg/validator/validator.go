@@ -12,7 +12,7 @@ import (
 )
 
 type Validator interface {
-	StrcutWithTranslateError(s interface{}) []error
+	StrcutWithTranslateError(s interface{}) errors.ValidationErrors
 }
 
 type validator struct {
@@ -47,14 +47,16 @@ func NewTranslator() ut.Translator {
 	return trans
 }
 
-func (v *validator) StrcutWithTranslateError(s interface{}) []error {
-	validatorErrs := v.Struct(s).(pv.ValidationErrors)
-	if validatorErrs == nil {
+func (v *validator) StrcutWithTranslateError(s interface{}) errors.ValidationErrors {
+	err := v.Struct(s)
+	if err == nil {
 		return nil
 	}
-	out := make([]error, 0)
+	validatorErrs := err.(pv.ValidationErrors)
+	var errs errors.ValidationErrors
 	for _, e := range validatorErrs {
-		out = append(out, errors.ErrValidation.SetError(e))
+		fieldError := errors.NewFieldError(e.Field(), e.Translate(v.trans))
+		errs = append(errs, fieldError)
 	}
-	return out
+	return errs
 }

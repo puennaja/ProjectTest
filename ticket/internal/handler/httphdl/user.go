@@ -17,7 +17,7 @@ func (hdl *HTTPHandler) UserMe(c echo.Context) error {
 
 	resp, err := hdl.userService.GetUserByID(ctx, auth.User.ID)
 	if err != nil {
-		return err
+		return errors.NewResponseErr(err)
 	}
 	return c.JSON(http.StatusOK, resp)
 }

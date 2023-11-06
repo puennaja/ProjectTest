@@ -115,3 +115,11 @@ func (repo *repository[T]) deleteOne(ctx context.Context, filter interface{}, op
 	err = repo.errorInterceptor(col.FindOneAndDelete(ctx, filter, opts...).Decode(&out))
 	return
 }
+
+func (repo *repository[T]) deleteMany(ctx context.Context, filter interface{}, opts ...*options.DeleteOptions) (out int64, err error) {
+	col := repo.collection()
+	result, err := col.DeleteMany(ctx, filter, opts...)
+	err = repo.errorInterceptor(err)
+	out = result.DeletedCount
+	return
+}

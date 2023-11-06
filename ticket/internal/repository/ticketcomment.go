@@ -6,70 +6,12 @@ import (
 	"ticket/internal/core/domain"
 	"ticket/internal/core/port"
 	"ticket/pkg/errors"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 )
-
-type ticketCommentRepository struct {
-	repository[ticketComment]
-}
-
-type ticketCommentList []ticketComment
-type ticketComment struct {
-	id       primitive.ObjectID `bson:"_id"`
-	ticketID primitive.ObjectID `bson:"ticket_id"`
-	user     baseUser           `bson:"user"`
-	comment  string             `bson:"comment"`
-	createAt time.Time          `bson:"create_at"`
-	updateAt time.Time          `bson:"update_at"`
-}
-
-func (t *ticketComment) fromDomain(d *domain.TicketCommentRequest) *ticketComment {
-	t.ticketID = toObjectID(d.TicketID)
-	t.comment = d.Comment
-	t.user = baseUser{}.fromDomain(d.User)
-	t.createAt = d.CreateAt
-	t.updateAt = d.UpdateAt
-	return t
-}
-
-func (t *ticketComment) toDomain() *domain.TicketCommentResponse {
-	if t == nil {
-		return nil
-	}
-	return &domain.TicketCommentResponse{
-		ID:       t.id.Hex(),
-		TicketID: t.ticketID.Hex(),
-		User:     t.user.toDomain(),
-		Comment:  t.comment,
-		CreateAt: t.createAt,
-		UpdateAt: t.updateAt,
-	}
-}
-
-func (tl ticketCommentList) toDomains() domain.TicketCommentResponseList {
-	out := make(domain.TicketCommentResponseList, 0)
-	for _, t := range tl {
-		out = append(out, *t.toDomain())
-	}
-	return out
-}
-
-type updateTicketComment struct {
-	comment  string    `bson:"comment,omitempty"`
-	updateAt time.Time `bson:"update_at"`
-}
-
-func (t *updateTicketComment) fromDomain(d *domain.UpdateTicketCommentRequest) *updateTicketComment {
-	t.comment = d.Comment
-	t.updateAt = d.UpdateAt
-	return t
-}
 
 func ticketCommentErrorInterceptor(err error) error {
 	if err == nil {
@@ -126,7 +68,7 @@ func (repo *ticketCommentRepository) Insert(ctx context.Context, data *domain.Ti
 func (repo *ticketCommentRepository) FindByQuery(ctx context.Context, query domain.GetTicketCommentListQuery) (*domain.TicketCommentPaginationResponse, error) {
 	filter := bson.M{}
 	if query.TicketID != "" {
-		filter["ticket_id"] = query.TicketID
+		filter["ticket_id"] = toObjectID(query.TicketID)
 	}
 
 	total, err := repo.countDocuments(ctx, filter)
@@ -155,7 +97,7 @@ func (repo *ticketCommentRepository) FindOneByID(ctx context.Context, id string)
 }
 
 func (repo *ticketCommentRepository) UpdateOneByID(ctx context.Context, data *domain.UpdateTicketCommentRequest) (*domain.TicketCommentResponse, error) {
-	query := repo.buildQueryByID(data.CommentID)
+	query := repo.buildQueryByID(data.ID)
 	updated := new(updateTicketComment).fromDomain(data)
 	v, err := repo.updateOne(ctx, query, updated, options.FindOneAndUpdate().SetReturnDocument(options.After))
 	if err != nil {
@@ -167,4 +109,16 @@ func (repo *ticketCommentRepository) DeleteOneByID(ctx context.Context, id strin
 	query := repo.buildQueryByID(id)
 	v, err := repo.deleteOne(ctx, query, options.FindOneAndDelete())
 	return v.toDomain(), err
+}
+
+func (repo *ticketCommentRepository) DeleteByTicketID(ctx context.Context, id string) (int64, error) {
+	query := bson.M{
+		"ticket_id": toObjectID(id),
+	}
+	count, err := repo.deleteMany(ctx, query, options.Delete())
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }

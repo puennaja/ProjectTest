@@ -7,22 +7,17 @@ import (
 	"time"
 )
 
-func (s Service) CreateTicket(ctx context.Context, data *domain.TicketRequest) (*domain.TicketResponse, error) {
-	auth, ok := ctx.Value(domain.ContextKeyAuth).(*domain.AuthenticationResponse)
-	if !ok {
-		return nil, errors.ErrUnauthorizedContext
-	}
-
+func (s Service) CreateTicket(ctx context.Context, user *domain.User, data *domain.TicketRequest) (*domain.TicketResponse, error) {
 	now := time.Now().UTC()
 	data.Status = domain.StatusToDo
 	data.Archive = false
 	data.CreateAt = now
 	data.UpdateAt = now
-	data.User = domain.BaseUser{
-		ID:       auth.User.ID,
-		Name:     auth.User.Name,
-		Email:    auth.User.Email,
-		ImageUrl: auth.User.ImageUrl,
+	data.User = domain.TicketUser{
+		ID:       user.ID,
+		Name:     user.Name,
+		Email:    user.Email,
+		ImageUrl: user.ImageUrl,
 	}
 
 	ticket, err := s.ticketRepo.Insert(ctx, data)
@@ -33,7 +28,7 @@ func (s Service) CreateTicket(ctx context.Context, data *domain.TicketRequest) (
 	return ticket, nil
 }
 func (s Service) GetTicketList(ctx context.Context, query domain.GetTicketListQuery) (*domain.TicketPaginationResponse, error) {
-	query.PaginationQuery.Sort = domain.QueryUpdatedAt
+	query.PaginationQuery.Sort = domain.QueryUpdateAt
 	query.PaginationQuery.SortDirection = domain.SortDirectionDesc
 	query.Archive = false
 
@@ -51,12 +46,7 @@ func (s Service) GetTicketByID(ctx context.Context, id string) (*domain.TicketRe
 	}
 	return out, nil
 }
-func (s Service) UpdateTicket(ctx context.Context, data *domain.UpdateTicketRequest) (*domain.TicketResponse, error) {
-	auth, ok := ctx.Value(domain.ContextKeyAuth).(*domain.AuthenticationResponse)
-	if !ok {
-		return nil, errors.ErrUnauthorizedContext
-	}
-
+func (s Service) UpdateTicket(ctx context.Context, user *domain.User, data *domain.UpdateTicketRequest) (*domain.TicketResponse, error) {
 	old, err := s.ticketRepo.FindOneByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -71,11 +61,11 @@ func (s Service) UpdateTicket(ctx context.Context, data *domain.UpdateTicketRequ
 	history := &domain.TicketHistoryRequest{
 		TicketID: data.ID,
 		CreateAt: time.Now().UTC(),
-		User: domain.BaseUser{
-			ID:       auth.User.ID,
-			Name:     auth.User.Name,
-			Email:    auth.User.Email,
-			ImageUrl: auth.User.ImageUrl,
+		User: domain.TicketUser{
+			ID:       user.ID,
+			Name:     user.Name,
+			Email:    user.Email,
+			ImageUrl: user.ImageUrl,
 		},
 		From: domain.BaseTicket{
 			Name:    old.Name,
@@ -101,11 +91,22 @@ func (s Service) DeleteTicket(ctx context.Context, id string) (*domain.TicketRes
 	if err != nil {
 		return nil, err
 	}
+
+	_, err = s.ticketHistoryRepo.DeleteByTicketID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.ticketCommentRepo.DeleteByTicketID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
 	return out, nil
 }
 
 func (s Service) GetTicketHistoryList(ctx context.Context, query domain.GetTicketHistoryListQuery) (*domain.TicketHistoryPaginationResponse, error) {
-	query.PaginationQuery.Sort = domain.QueryUpdatedAt
+	query.PaginationQuery.Sort = domain.QueryUpdateAt
 	query.PaginationQuery.SortDirection = domain.SortDirectionDesc
 	out, err := s.ticketHistoryRepo.FindByQuery(ctx, query)
 	if err != nil {
@@ -114,20 +115,15 @@ func (s Service) GetTicketHistoryList(ctx context.Context, query domain.GetTicke
 	return out, nil
 }
 
-func (s Service) CreateTicketComment(ctx context.Context, data *domain.TicketCommentRequest) (*domain.TicketCommentResponse, error) {
-	auth, ok := ctx.Value(domain.ContextKeyAuth).(*domain.AuthenticationResponse)
-	if !ok {
-		return nil, errors.ErrUnauthorizedContext
-	}
-
+func (s Service) CreateTicketComment(ctx context.Context, user *domain.User, data *domain.TicketCommentRequest) (*domain.TicketCommentResponse, error) {
 	now := time.Now().UTC()
 	data.CreateAt = now
 	data.UpdateAt = now
-	data.User = domain.BaseUser{
-		ID:       auth.User.ID,
-		Name:     auth.User.Name,
-		Email:    auth.User.Email,
-		ImageUrl: auth.User.ImageUrl,
+	data.User = domain.TicketUser{
+		ID:       user.ID,
+		Name:     user.Name,
+		Email:    user.Email,
+		ImageUrl: user.ImageUrl,
 	}
 	out, err := s.ticketCommentRepo.Insert(ctx, data)
 	if err != nil {
@@ -137,7 +133,7 @@ func (s Service) CreateTicketComment(ctx context.Context, data *domain.TicketCom
 }
 
 func (s Service) GetTicketCommentList(ctx context.Context, query domain.GetTicketCommentListQuery) (*domain.TicketCommentPaginationResponse, error) {
-	query.PaginationQuery.Sort = domain.QueryUpdatedAt
+	query.PaginationQuery.Sort = domain.QueryUpdateAt
 	query.PaginationQuery.SortDirection = domain.SortDirectionDesc
 	out, err := s.ticketCommentRepo.FindByQuery(ctx, query)
 	if err != nil {
@@ -147,7 +143,16 @@ func (s Service) GetTicketCommentList(ctx context.Context, query domain.GetTicke
 
 }
 
-func (s Service) UpdateTicketComment(ctx context.Context, data *domain.UpdateTicketCommentRequest) (*domain.TicketCommentResponse, error) {
+func (s Service) UpdateTicketComment(ctx context.Context, user *domain.User, data *domain.UpdateTicketCommentRequest) (*domain.TicketCommentResponse, error) {
+	comment, err := s.ticketCommentRepo.FindOneByID(ctx, data.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.ID != comment.User.ID {
+		return nil, errors.ErrPermissionDenied
+	}
+
 	data.UpdateAt = time.Now().UTC()
 	out, err := s.ticketCommentRepo.UpdateOneByID(ctx, data)
 	if err != nil {
@@ -156,10 +161,20 @@ func (s Service) UpdateTicketComment(ctx context.Context, data *domain.UpdateTic
 	return out, nil
 
 }
-func (s Service) DeleteTicketComment(ctx context.Context, id string) (*domain.TicketCommentResponse, error) {
+func (s Service) DeleteTicketComment(ctx context.Context, user *domain.User, id string) (*domain.TicketCommentResponse, error) {
+	comment, err := s.ticketCommentRepo.FindOneByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.ID != comment.User.ID {
+		return nil, errors.ErrPermissionDenied
+	}
+
 	out, err := s.ticketCommentRepo.DeleteOneByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }

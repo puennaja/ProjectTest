@@ -1,17 +1,17 @@
 {
   "type": "object",
-  "required": ["name", "detail"],
+  "required": ["name", "deatail"],
   "description": "ticket update request body",
   "properties": {
     "name": {
       "type": "string"
     },
-    "detail": {
+    "deatail": {
       "type": "string"
     }
   },
   "example": {
     "name": "Ticket Name",
-    "detail": "detail of the ticket"
+    "deatail": "detail of the ticket"
   }
 }

@@ -3,10 +3,10 @@ package repository
 import (
 	"context"
 	"math"
+	"strings"
 	"ticket/internal/core/domain"
 	"ticket/internal/core/port"
 	"ticket/pkg/errors"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,91 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 )
-
-type ticketRepository struct {
-	repository[ticket]
-}
-
-type baseTicket struct {
-	name    string `bson:"name"`
-	deatail string `bson:"deatail"`
-	status  string `bson:"status"`
-	archive bool   `bson:"archive,omitempty"`
-}
-type ticketList []ticket
-type ticket struct {
-	baseTicket
-	id       primitive.ObjectID `bson:"_id"`
-	createAt time.Time          `bson:"create_at"`
-	updateAt time.Time          `bson:"update_at"`
-	user     baseUser           `bson:"user"`
-}
-
-func (b baseTicket) fromDomain(d domain.BaseTicket) baseTicket {
-	b.name = d.Name
-	b.deatail = d.Deatail
-	b.status = d.Status
-	b.archive = d.Archive
-	return b
-}
-
-func (b baseTicket) toDomain() domain.BaseTicket {
-	return domain.BaseTicket{
-		Name:    b.name,
-		Deatail: b.deatail,
-		Status:  b.status,
-		Archive: b.archive,
-	}
-}
-
-func (t *ticket) fromDomain(d *domain.TicketRequest) *ticket {
-	t.name = d.Name
-	t.deatail = d.Deatail
-	t.status = d.Status
-	t.archive = d.Archive
-	t.createAt = d.CreateAt
-	t.updateAt = d.UpdateAt
-	t.user = baseUser{}.fromDomain(d.User)
-	return t
-}
-
-func (t *ticket) toDomain() *domain.TicketResponse {
-	if t == nil {
-		return nil
-	}
-	return &domain.TicketResponse{
-		ID:         t.id.Hex(),
-		BaseTicket: t.baseTicket.toDomain(),
-		CreateAt:   t.createAt,
-		UpdateAt:   t.updateAt,
-		User:       t.user.toDomain(),
-	}
-}
-
-func (tl ticketList) toDomains() domain.TicketResponseList {
-	out := make(domain.TicketResponseList, 0)
-	for _, t := range tl {
-		out = append(out, *t.toDomain())
-	}
-	return out
-}
-
-type updateTicket struct {
-	name     string    `bson:"name,omitempty"`
-	deatail  string    `bson:"deatail,omitempty"`
-	status   string    `bson:"status,omitempty"`
-	archive  bool      `bson:"archive,omitempty"`
-	updateAt time.Time `bson:"update_at,omitempty"`
-}
-
-func (t *updateTicket) fromDomain(d *domain.UpdateTicketRequest) *updateTicket {
-	t.name = d.Name
-	t.deatail = d.Deatail
-	t.status = d.Status
-	t.archive = d.Archive
-	t.updateAt = d.UpdateAt
-	return t
-}
 
 func ticketErrorInterceptor(err error) error {
 	if err == nil {
@@ -141,7 +56,7 @@ func (repo *ticketRepository) FindByQuery(ctx context.Context, query domain.GetT
 	filter := bson.M{}
 	filter["archive"] = query.Archive
 	if query.Name != "" {
-		filter["name"] = query.Name
+		filter["name"] = bson.M{"$regex": primitive.Regex{Pattern: ".*" + strings.TrimSpace(query.Name) + ".*", Options: "i"}}
 	}
 
 	total, err := repo.countDocuments(ctx, filter)

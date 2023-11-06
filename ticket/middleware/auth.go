@@ -29,16 +29,16 @@ func Auth(authSvc port.AuthService) func(next echo.HandlerFunc) echo.HandlerFunc
 			// authorization
 			authorization, err := authSvc.Authorization(ctx, authentication.User.Role, method, path)
 			if err != nil {
-				return errors.ErrPermissionDenied.SetError(err)
+				return errors.ErrUnauthorized.SetError(err)
 			}
 
-			if authorization.GrantAccess {
-				ctxAuth := context.WithValue(ctx, domain.ContextKeyAuth, authentication)
-				ctxToken := context.WithValue(ctxAuth, domain.ContextKeyToken, token)
-				c.SetRequest(c.Request().WithContext(ctxToken))
-			} else {
+			if !authorization.GrantAccess {
 				return errors.ErrPermissionDenied
 			}
+
+			ctxToken := context.WithValue(c.Request().Context(), domain.ContextKeyToken, token)
+			ctxAuth := context.WithValue(ctxToken, domain.ContextKeyAuth, authentication)
+			c.SetRequest(c.Request().WithContext(ctxAuth))
 			return next(c)
 		}
 	}

@@ -1,4 +1,4 @@
-package validator
+package errors
 
 import (
 	"bytes"
@@ -34,6 +34,13 @@ func (fe *fieldError) Error() string {
 
 func (fe *fieldError) Field() string {
 	return fe.field
+}
+
+func IsValidationErrors(e error) ValidationErrors {
+	if i, ok := e.(ValidationErrors); ok {
+		return i
+	}
+	return nil
 }
 
 func NewFieldError(field, message string) FieldError {

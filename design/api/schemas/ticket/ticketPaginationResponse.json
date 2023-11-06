@@ -37,6 +37,7 @@
         "name": "Ticket Name",
         "detail": "ticket detail",
         "status": "to_do",
+        "archive": false,
         "created_at": "2022-05-06T09:52:47.032+00:00",
         "updated_at": "2022-05-06T09:52:47.032+00:00",
         "user": {

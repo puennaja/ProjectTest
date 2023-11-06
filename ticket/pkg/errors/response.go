@@ -5,6 +5,7 @@ import (
 )
 
 type ExternalErr struct {
+	Field   string `json:"field,omitempty"`
 	Message string `json:"message"`
 }
 
@@ -27,9 +28,11 @@ func NewResponseErr(err error, optsFuncs ...func(*ResponseErr)) *ResponseErr {
 			responseErr.httpStatus = internalErr.status
 			responseErr.Code = internalErr.code
 			responseErr.Message = internalErr.message
-			responseErr.Errors = append(responseErr.Errors, ExternalErr{Message: internalErr.Error()})
+			if internalErr.err != nil {
+				responseErr.Errors = append(responseErr.Errors, ExternalErr{Message: internalErr.err.Error()})
+			}
 		} else {
-			responseErr.Errors = append(responseErr.Errors, ExternalErr{Message: err.Error()})
+			responseErr.Message = err.Error()
 		}
 	}
 	for _, optsFunc := range optsFuncs {
@@ -71,19 +74,17 @@ func OptionErr(err error) func(*ResponseErr) {
 		internalErr := IsInternalError(err)
 		if internalErr != nil {
 			e.Errors = append(e.Errors, ExternalErr{Message: internalErr.Error()})
+			return
 		}
-		e.Errors = append(e.Errors, ExternalErr{Message: err.Error()})
-	}
-}
 
-func OptionErrs(errs []error) func(*ResponseErr) {
-	return func(e *ResponseErr) {
-		for _, err := range errs {
-			internalErr := IsInternalError(err)
-			if internalErr != nil {
-				e.Errors = append(e.Errors, ExternalErr{Message: internalErr.Error()})
+		validationErrs := IsValidationErrors(err)
+		if validationErrs != nil {
+			for _, v := range validationErrs {
+				e.Errors = append(e.Errors, ExternalErr{Field: v.Field(), Message: v.Error()})
 			}
-			e.Errors = append(e.Errors, ExternalErr{Message: err.Error()})
+			return
 		}
+
+		e.Errors = append(e.Errors, ExternalErr{Message: err.Error()})
 	}
 }

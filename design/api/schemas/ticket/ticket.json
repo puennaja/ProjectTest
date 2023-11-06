@@ -1,6 +1,5 @@
 {
   "type": "object",
-  "required": ["name", "detail", "status"],
   "description": "ticket object",
   "properties": {
     "name": {
@@ -12,11 +11,15 @@
     "status": {
       "type": "string",
       "enum": ["to_do", "in_progress", "done"]
+    },
+    "archive": {
+      "type": "boolean"
     }
   },
   "example": {
     "name": "Ticket Name",
     "detail": "ticket detail",
-    "status": "to_do"
+    "status": "to_do",
+    "archive": false
   }
 }

@@ -1,5 +1,26 @@
 [
+  { "ptype": "p", "v0": "auth", "v1": "/auth/logout", "v2": "POST" },
   { "ptype": "p", "v0": "user", "v1": "/user/me", "v2": "GET" },
+  { "ptype": "p", "v0": "ticket", "v1": "/ticket", "v2": "POST" },
+  { "ptype": "p", "v0": "ticket", "v1": "/ticket", "v2": "GET" },
+  {
+    "ptype": "p",
+    "v0": "ticket",
+    "v1": "/ticket/comment/:id",
+    "v2": "PATCH"
+  },
+  { "ptype": "p", "v0": "ticket", "v1": "/ticket/comment/:id", "v2": "DELETE" },
+  { "ptype": "p", "v0": "ticket", "v1": "/ticket/:id/comment", "v2": "POST" },
+  { "ptype": "p", "v0": "ticket", "v1": "/ticket/:id/comment", "v2": "GET" },
+  { "ptype": "p", "v0": "ticket", "v1": "/ticket/:id/history", "v2": "GET" },
+  { "ptype": "p", "v0": "ticket", "v1": "/ticket/:id", "v2": "GET" },
+  { "ptype": "p", "v0": "ticket", "v1": "/ticket/:id", "v2": "PATCH" },
+  { "ptype": "p", "v0": "ticket", "v1": "/ticket/:id", "v2": "DELETE" },
+
+  { "ptype": "g", "v0": "dev", "v1": "auth" },
+  { "ptype": "g", "v0": "qa", "v1": "auth" },
   { "ptype": "g", "v0": "dev", "v1": "user" },
-  { "ptype": "g", "v0": "qa", "v1": "user" }
+  { "ptype": "g", "v0": "qa", "v1": "user" },
+  { "ptype": "g", "v0": "dev", "v1": "ticket" },
+  { "ptype": "g", "v0": "qa", "v1": "ticket" }
 ]
