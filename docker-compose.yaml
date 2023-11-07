@@ -50,18 +50,19 @@ services:
       context: ./ticketdatabase/seed
       dockerfile: Dockerfile
       args:
-        - DATABASE_URI=mongodb://test:test@mongo-ticket-project:27017/ticket
-        - USERNAME=test
-        - PASSWORD=test
+        - HOST=mongo-ticket-project
+        - PORT=27017
+        - DATABASE=ticket
+        - DATABASE_URI=mongodb://test:test@mongo-ticket-project:27017
     container_name: mongo-seed
-    depends_on:
+    links:
       - mongo
     networks:
       - project-network
 
 volumes:
   mongo_data:
-    name: ticket-project-mongo_data
+    name: project-database
 
 networks:
   project-network:

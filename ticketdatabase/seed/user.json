@@ -1,39 +1,36 @@
-[{
-  "_id": {
-    "$oid": "6549336c49da5ccfc65a5d85"
-  },
-  "name": "user name",
-  "email": "user@example.com",
-  "image_url": "http://example.com",
-  "pwd": "c0067d4af4e87f00dbac63b6156828237059172d1bbeac67427345d6a9fda484",
-  "role": "dev",
-  "create_at": {
-    "$date": {
-      "$numberLong": "1699277075000"
+[
+  {
+    "name": "user name",
+    "email": "user@example.com",
+    "image_url": "http://example.com",
+    "pwd": "c0067d4af4e87f00dbac63b6156828237059172d1bbeac67427345d6a9fda484",
+    "role": "dev",
+    "create_at": {
+      "$date": {
+        "$numberLong": "1699277075000"
+      }
+    },
+    "update_at": {
+      "$date": {
+        "$numberLong": "1699277075000"
+      }
     }
   },
-  "update_at": {
-    "$date": {
-      "$numberLong": "1699277075000"
-    }
-  }
-},{
-  "_id": {
-    "$oid": "65493ed349da5ccfc65a5d90"
-  },
-  "name": "user2 name",
-  "email": "user2@example.com",
-  "image_url": "http://example.com",
-  "pwd": "c0067d4af4e87f00dbac63b6156828237059172d1bbeac67427345d6a9fda484",
-  "role": "qa",
-  "create_at": {
-    "$date": {
-      "$numberLong": "1699277075000"
-    }
-  },
-  "update_at": {
-    "$date": {
-      "$numberLong": "1699277075000"
+  {
+    "name": "user2 name",
+    "email": "user2@example.com",
+    "image_url": "http://example.com",
+    "pwd": "c0067d4af4e87f00dbac63b6156828237059172d1bbeac67427345d6a9fda484",
+    "role": "qa",
+    "create_at": {
+      "$date": {
+        "$numberLong": "1699277075000"
+      }
+    },
+    "update_at": {
+      "$date": {
+        "$numberLong": "1699277075000"
+      }
     }
   }
-}]
+]
