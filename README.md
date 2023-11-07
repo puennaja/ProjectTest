@@ -1,8 +1,9 @@
-# Test
+# Project: Ticket
 
-edit some thing
+## Start
 
-# build
+docker compose up -d
 
-docker build -t ticket-project:1.0.0 ticket
-docker build -t mongo-ticket-project:1.0.0 ticketdatabase
+## Init Data
+
+upload ./ticketdatabase/user.json into user colletion in mongo for starting
